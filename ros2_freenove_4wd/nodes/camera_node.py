@@ -9,6 +9,7 @@ import cv2
 
 
 class CameraNode(Node):
+    # Initialize node, parameters, camera, publisher, and timer.
     def __init__(self):
         super().__init__('camera_node')
         self.declare_parameter('width', 640)
@@ -32,6 +33,7 @@ class CameraNode(Node):
         self.timer = self.create_timer(1.0 / max(fps, 1), self.capture_and_publish)
         self.get_logger().info(f'Camera node started at {w}x{h}@{fps}fps')
 
+    # Grab a frame from Picamera2 and publish as sensor_msgs/Image.
     def capture_and_publish(self):
         try:
             # Picamera2 returns RGB; convert to BGR for cv_bridge default encoding mapping
@@ -44,6 +46,7 @@ class CameraNode(Node):
         except Exception as e:
             self.get_logger().warn(f'Capture failed: {e}')
 
+    # Stop and close the camera on shutdown.
     def destroy_node(self):
         try:
             self.cam.stop()
@@ -53,6 +56,7 @@ class CameraNode(Node):
         return super().destroy_node()
 
 
+# Entry point to run the camera node as a console script.
 def main(args=None):
     rclpy.init(args=args)
     node = CameraNode()
@@ -63,4 +67,3 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-

@@ -18,18 +18,22 @@ class PCA9685:
     __ALLLED_OFF_L = 0xFC
     __ALLLED_OFF_H = 0xFD
 
+    # Initialize I2C device at address and wake the controller.
     def __init__(self, address: int = 0x40, debug: bool = False):
         self.bus = smbus.SMBus(1)
         self.address = address
         self.debug = debug
         self.write(self.__MODE1, 0x00)
 
+    # Write 8-bit value to a register over I2C.
     def write(self, reg: int, value: int) -> None:
         self.bus.write_byte_data(self.address, reg, value)
 
+    # Read 8-bit value from a register over I2C.
     def read(self, reg: int) -> int:
         return self.bus.read_byte_data(self.address, reg)
 
+    # Configure global PWM frequency.
     def set_pwm_freq(self, freq: float) -> None:
         prescaleval = 25000000.0
         prescaleval /= 4096.0
@@ -45,15 +49,17 @@ class PCA9685:
         time.sleep(0.005)
         self.write(self.__MODE1, oldmode | 0x80)
 
+    # Set raw PWM on/off counts for a given channel.
     def set_pwm(self, channel: int, on: int, off: int) -> None:
         self.write(self.__LED0_ON_L + 4 * channel, on & 0xFF)
         self.write(self.__LED0_ON_H + 4 * channel, on >> 8)
         self.write(self.__LED0_OFF_L + 4 * channel, off & 0xFF)
         self.write(self.__LED0_OFF_H + 4 * channel, off >> 8)
 
+    # Convenience: set duty cycle for motor channel.
     def set_motor_pwm(self, channel: int, duty: int) -> None:
         self.set_pwm(channel, 0, duty)
 
+    # Close I2C bus handle.
     def close(self) -> None:
         self.bus.close()
-

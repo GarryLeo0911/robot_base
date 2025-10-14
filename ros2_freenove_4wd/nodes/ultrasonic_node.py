@@ -5,6 +5,7 @@ from ..hw.ultrasonic import Ultrasonic
 
 
 class UltrasonicNode(Node):
+    # Initialize node, parameters, sensor, publisher, and timer.
     def __init__(self):
         super().__init__('ultrasonic_node')
         self.declare_parameter('trigger_pin', 27)
@@ -20,6 +21,7 @@ class UltrasonicNode(Node):
         self.timer = self.create_timer(1.0 / max(rate, 0.1), self.timer_cb)
         self.get_logger().info('Ultrasonic node started.')
 
+    # Periodic timer callback: read distance and publish sensor_msgs/Range.
     def timer_cb(self):
         d = self.sensor.get_distance_cm()
         if d is None:
@@ -34,6 +36,7 @@ class UltrasonicNode(Node):
         msg.range = float(d) / 100.0
         self.pub.publish(msg)
 
+    # Close ultrasonic sensor on shutdown.
     def destroy_node(self):
         try:
             self.sensor.close()
@@ -42,6 +45,7 @@ class UltrasonicNode(Node):
         return super().destroy_node()
 
 
+# Entry point to run the ultrasonic node as a console script.
 def main(args=None):
     rclpy.init(args=args)
     node = UltrasonicNode()
@@ -52,4 +56,3 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-

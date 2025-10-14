@@ -6,6 +6,7 @@ from ..hw.spi_ledpixel import Freenove_SPI_LedPixel
 
 
 class LEDNode(Node):
+    # Initialize node, parameters, LED driver, and subscription.
     def __init__(self):
         super().__init__('led_node')
         self.declare_parameter('count', 8)
@@ -24,6 +25,7 @@ class LEDNode(Node):
         self.sub = self.create_subscription(ColorRGBA, 'led_color', self.cb, 10)
         self.get_logger().info('LED node started.')
 
+    # Apply received ColorRGBA to all LEDs (0..1 scaled to 0..255).
     def cb(self, msg: ColorRGBA):
         if not self.leds or self.leds.check_spi_state() == 0:
             return
@@ -32,6 +34,7 @@ class LEDNode(Node):
         b = max(0, min(int(round(msg.b * 255.0)), 255))
         self.leds.set_all_led_color(r, g, b)
 
+    # Turn off LEDs and close SPI on shutdown.
     def destroy_node(self):
         try:
             if self.leds:
@@ -42,6 +45,7 @@ class LEDNode(Node):
         return super().destroy_node()
 
 
+# Entry point to run the LED node as a console script.
 def main(args=None):
     rclpy.init(args=args)
     node = LEDNode()
@@ -52,4 +56,3 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-
