@@ -28,10 +28,11 @@ def keymap_to_twist(pressed_keys: set) -> Twist:
         lin -= 1.0
     if 's' in pressed_keys:
         lin += 1.0
+    # Invert angular direction so 'a' is left and 'd' is right per your setup
     if 'a' in pressed_keys:
-        ang += 1.0
-    if 'd' in pressed_keys:
         ang -= 1.0
+    if 'd' in pressed_keys:
+        ang += 1.0
 
     msg = Twist()
     msg.linear.x = max(min(lin, 1.0), -1.0)
