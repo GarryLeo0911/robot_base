@@ -13,6 +13,12 @@ def generate_launch_description():
         ),
         Node(
             package='ros2_freenove_4wd',
+            executable='teleop_wasd',
+            name='teleop_wasd',
+            output='screen',
+        ),
+        Node(
+            package='ros2_freenove_4wd',
             executable='led_node',
             name='led_node',
             output='screen',
@@ -33,4 +39,3 @@ def generate_launch_description():
             parameters=[{'width': 640, 'height': 480, 'fps': 15, 'frame_id': 'camera'}],
         ),
     ])
-

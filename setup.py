@@ -25,7 +25,7 @@ setup(
             'led_node = ros2_freenove_4wd.nodes.led_node:main',
             'ultrasonic_node = ros2_freenove_4wd.nodes.ultrasonic_node:main',
             'camera_node = ros2_freenove_4wd.nodes.camera_node:main',
+            'teleop_wasd = ros2_freenove_4wd.nodes.teleop_wasd:main',
         ],
     },
 )
-
