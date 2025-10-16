@@ -23,10 +23,11 @@ def raw_stdin():
 def keymap_to_twist(pressed_keys: set) -> Twist:
     lin = 0.0
     ang = 0.0
+    # Invert linear direction so 'w' is forward and 's' is backward
     if 'w' in pressed_keys:
-        lin += 1.0
-    if 's' in pressed_keys:
         lin -= 1.0
+    if 's' in pressed_keys:
+        lin += 1.0
     if 'a' in pressed_keys:
         ang += 1.0
     if 'd' in pressed_keys:
@@ -92,4 +93,3 @@ def main(argv=None):
         node.get_logger().info('Teleop stopped.')
         node.destroy_node()
         rclpy.shutdown()
-
