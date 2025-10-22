@@ -11,6 +11,8 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     map_yaml = LaunchConfiguration('map')
     params_file = LaunchConfiguration('params_file')
+    slam = LaunchConfiguration('slam')
+    use_composition = LaunchConfiguration('use_composition')
 
     pkg_share = get_package_share_directory('ros2_freenove_4wd')
     default_params = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
@@ -20,6 +22,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation clock'),
         DeclareLaunchArgument('map', default_value='', description='Full path to map yaml to load'),
         DeclareLaunchArgument('params_file', default_value=default_params, description='Nav2 params YAML'),
+        DeclareLaunchArgument('slam', default_value='False', description='Run SLAM instead of AMCL'),
+        DeclareLaunchArgument('use_composition', default_value='True', description='Launch Nav2 in a composed container'),
 
         # Robot description publisher (all joints are fixed)
         Node(
@@ -51,6 +55,8 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time,
                 'params_file': params_file,
                 'map': map_yaml,
+                'slam': slam,
+                'use_composition': use_composition,
             }.items(),
         ),
     ])
