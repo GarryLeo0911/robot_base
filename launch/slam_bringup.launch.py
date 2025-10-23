@@ -37,7 +37,8 @@ def generate_launch_description():
         DeclareLaunchArgument('depthai_pkg', default_value='depthai_ros_driver', description='Package providing rtabmap.launch.py'),
         DeclareLaunchArgument('depthai_launch', default_value='rtabmap.launch.py', description='DepthAI RTAB-Map launch file name'),
         DeclareLaunchArgument('camera_pkg', default_value='depthai_ros_driver', description='Package providing camera-only launch'),
-        DeclareLaunchArgument('camera_launch', default_value='camera.launch.py', description='Camera-only launch file name'),
+        # Default to a depth-capable camera launch
+        DeclareLaunchArgument('camera_launch', default_value='rtabmap.launch.py', description='Camera-only launch file name'),
         DeclareLaunchArgument('only_camera', default_value='false', description='If true, include camera-only launch (Pi). If false, include RTAB-Map launch (laptop or single-machine).'),
         DeclareLaunchArgument('cam_parent_frame', default_value='base_link', description='Parent frame for camera'),
         DeclareLaunchArgument('cam_child_frame', default_value='oak-d_frame', description='Camera frame id published by DepthAI'),
