@@ -34,7 +34,31 @@ def generate_launch_description():
         DeclareLaunchArgument('topic_queue_size', default_value='10', description='RTAB-Map topic queue size'),
         DeclareLaunchArgument('sync_queue_size', default_value='10', description='RTAB-Map sync queue size'),
 
-        # RTAB-Map core (subscribes RGBD)
+        # RGB-D Odometry (computes /odom from RGB-D)
+        Node(
+            package='rtabmap_odom',
+            executable='rgbd_odometry',
+            name='rgbd_odom',
+            output='screen',
+            parameters=[{
+                'use_sim_time': use_sim_time,
+                'frame_id': base_frame,
+                'odom_frame_id': odom_frame,
+                'publish_tf': True,
+                'approx_sync': True,
+                'queue_size': topic_queue_size,
+                'sync_queue_size': sync_queue_size,
+                'image_transport': image_transport,
+            }],
+            remappings=[
+                ('rgb/image', rgb_topic),
+                ('depth/image', depth_topic),
+                ('rgb/camera_info', camera_info_topic),
+                # Output odom topic remains '/odom' by default
+            ],
+        ),
+
+        # RTAB-Map core (subscribes RGBD + /odom)
         # In ROS 2 Jazzy, the executable is provided by package 'rtabmap_slam'.
         Node(
             package='rtabmap_slam',
