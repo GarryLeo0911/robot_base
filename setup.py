@@ -1,4 +1,6 @@
 from setuptools import setup
+from glob import glob
+import os
 
 package_name = 'ros2_freenove_4wd'
 
@@ -9,13 +11,12 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages', [f'resource/{package_name}']),
         (f'share/{package_name}', ['package.xml']),
-        (f'share/{package_name}/launch', [
-            'launch/bringup.launch.py',
-            'launch/nav2.launch.py',
-            'launch/slam_bringup.launch.py',
-        ]),
-        (f'share/{package_name}/config', ['config/nav2_params.yaml']),
-        (f'share/{package_name}/urdf', ['urdf/freenove_4wd.urdf']),
+        # Install all launch files automatically
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        # Install all YAML configs in config/
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        # Install all URDF files in urdf/
+        (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
         (f'share/{package_name}', ['README.md']),
     ],
     install_requires=['setuptools'],
