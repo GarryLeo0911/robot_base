@@ -31,8 +31,9 @@ def generate_launch_description():
         DeclareLaunchArgument('image_transport', default_value='compressed', description='image_transport hint for subscriptions'),
 
         # RTAB-Map core (subscribes RGBD)
+        # In ROS 2 Jazzy, the executable is provided by package 'rtabmap_slam'.
         Node(
-            package='rtabmap_ros',
+            package='rtabmap_slam',
             executable='rtabmap',
             name='rtabmap',
             output='screen',
@@ -55,9 +56,10 @@ def generate_launch_description():
         ),
 
         # RTAB-Map visualization on the laptop
+        # In ROS 2 Jazzy, the viz executable is in package 'rtabmap_viz' as 'rtabmap_viz'.
         Node(
-            package='rtabmap_ros',
-            executable='rtabmapviz',
+            package='rtabmap_viz',
+            executable='rtabmap_viz',
             name='rtabmapviz',
             output='screen',
             parameters=[{
@@ -72,4 +74,3 @@ def generate_launch_description():
             ],
         ),
     ])
-
