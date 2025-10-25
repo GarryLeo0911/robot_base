@@ -13,20 +13,18 @@ Launch
 SLAM (OAK‑D + RTAB‑Map)
 - Purpose: Teleop the car while building a map and getting localization from RTAB‑Map. Nav2 is not required.
 - Requirements: OAK‑D and ros-jazzy-depthai-ros installed; its `rtabmap.launch.py` available (usually in package `depthai_ros`).
-- Start SLAM teleop bringup:
+- Start SLAM teleop bringup (robot side, actuator/sensors only):
   - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py`
   - Optional args:
-    - `depthai_pkg:=<your_depthai_pkg>` (default `depthai_ros_driver`)
-    - `depthai_launch:=rtabmap.launch.py` (relative name under the DepthAI package's `launch/`)
     - `camera_pkg:=<your_camera_pkg>` (default `depthai_ros_driver`)
     - `camera_launch:=camera.launch.py` (camera-only launch under the camera package)
-    - `only_camera:=false` (if true, include only camera launch; use on the robot when running RTAB‑Map on a remote laptop)
+    - `include_camera:=true` (include the camera-only launch on the robot; no SLAM or heavy processing runs on the Pi)
     - `cam_parent_frame:=base_link` (parent frame)
     - `cam_child_frame:=oak-d_frame` (OAK‑D frame published by DepthAI)
     - `cam_x:=0.08 cam_y:=0.0 cam_z:=0.08 cam_roll:=0 cam_pitch:=0 cam_yaw:=0` (static TF from parent to camera)
 - Notes:
-  - This launch includes `motor_node`, `teleop_wasd`, `robot_state_publisher`, a static TF from `base_link` to the OAK‑D frame, and includes DepthAI’s `rtabmap.launch.py`.
-  - If your DepthAI package name or launch path differs, pass the args above, or set them permanently by editing `launch/slam_bringup.launch.py`.
+  - This launch includes `motor_node`, `teleop_wasd`, `robot_state_publisher`, a static TF from `base_link` to the OAK‑D frame, and (optionally) includes a camera‑only launch from your camera package. It does not run RTAB‑Map on the Pi.
+  - If your DepthAI (or other camera) package/launch path differs, pass the args above, or set them permanently by editing `launch/slam_bringup.launch.py`.
   - Make sure RTAB‑Map is configured to use `base_link` as the base frame and to publish `map->odom` TF. Visual odometry typically publishes `odom->base_link`.
 
 Two‑Machine Setup (Robot streams, Laptop maps)
@@ -43,9 +41,9 @@ Two‑Machine Setup (Robot streams, Laptop maps)
 - Make sure firewalls allow UDP multicast on the LAN or temporarily disable firewall on the private network profile.
 
 2) Start the robot (Pi)
-- Run the bringup in camera‑only mode so the Pi publishes OAK‑D topics but does not run RTAB‑Map:
+- Run the bringup so the Pi publishes sensor topics but does not run RTAB‑Map:
   - Example (adjust camera launch file to your driver):
-  - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py only_camera:=true camera_pkg:=depthai_ros_driver camera_launch:=camera.launch.py`
+  - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py include_camera:=true camera_pkg:=depthai_ros_driver camera_launch:=camera.launch.py`
 
 3) Start RTAB‑Map + Viz on the laptop
 - Use the provided laptop launch (adjust topics to match your DepthAI driver namespace):

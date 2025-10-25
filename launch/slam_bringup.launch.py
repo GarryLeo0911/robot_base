@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -24,22 +24,16 @@ def generate_launch_description():
     pkg_share = get_package_share_directory('ros2_freenove_4wd')
     urdf_path = os.path.join(pkg_share, 'urdf', 'freenove_4wd.urdf')
 
-    # DepthAI + RTAB-Map package/launch (parameterized)
-    depthai_pkg = LaunchConfiguration('depthai_pkg')
-    depthai_launch = LaunchConfiguration('depthai_launch')
-    # Camera-only include (for running sensors on the robot and RTAB-Map remotely)
+    # Camera-only include (run sensors on robot, do all processing on laptop)
     camera_pkg = LaunchConfiguration('camera_pkg')
     camera_launch = LaunchConfiguration('camera_launch')
-    only_camera = LaunchConfiguration('only_camera')
+    include_camera = LaunchConfiguration('include_camera')
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation time'),
-        DeclareLaunchArgument('depthai_pkg', default_value='depthai_ros_driver', description='Package providing rtabmap.launch.py'),
-        DeclareLaunchArgument('depthai_launch', default_value='rtabmap.launch.py', description='DepthAI RTAB-Map launch file name'),
-        DeclareLaunchArgument('camera_pkg', default_value='depthai_ros_driver', description='Package providing camera-only launch'),
-        # Default to a depth-capable camera launch
-        DeclareLaunchArgument('camera_launch', default_value='rtabmap.launch.py', description='Camera-only launch file name'),
-        DeclareLaunchArgument('only_camera', default_value='false', description='If true, include camera-only launch (Pi). If false, include RTAB-Map launch (laptop or single-machine).'),
+        DeclareLaunchArgument('camera_pkg', default_value='depthai_ros_driver', description='Package providing camera-only launch (e.g., depthai_ros_driver)'),
+        DeclareLaunchArgument('camera_launch', default_value='camera.launch.py', description='Camera-only launch file name under camera_pkg'),
+        DeclareLaunchArgument('include_camera', default_value='true', description='If true, include camera-only launch on robot. No SLAM runs here.'),
         DeclareLaunchArgument('cam_parent_frame', default_value='base_link', description='Parent frame for camera'),
         DeclareLaunchArgument('cam_child_frame', default_value='oak-d_frame', description='Camera frame id published by DepthAI'),
         DeclareLaunchArgument('cam_x', default_value='0.08', description='Camera X offset (m) from parent'),
@@ -90,31 +84,12 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # DepthAI + RTAB-Map pipeline (local mapping) unless only_camera is true
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([
-                FindPackageShare(depthai_pkg), '/launch/', depthai_launch
-            ]),
-            condition=UnlessCondition(only_camera),
-            # If your rtabmap.launch.py exposes args (e.g., use_imu, base_frame, odom_frame),
-            # you can pass them here via launch_arguments.
-            launch_arguments={
-                # Examples (uncomment and adjust to match your installed launch):
-                # 'base_frame': 'base_link',
-                # 'odom_frame': 'odom',
-                # 'map_frame': 'map',
-                # 'publish_tf': 'true',
-                # 'use_imu': 'true',
-                # 'camera_model': 'OAK-D',
-            }.items(),
-        ),
-
-        # Camera-only pipeline (for running on the robot) if only_camera is true
+        # Camera-only pipeline (for running on the robot). No SLAM or heavy processing here.
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([
                 FindPackageShare(camera_pkg), '/launch/', camera_launch
             ]),
-            condition=IfCondition(only_camera),
+            condition=IfCondition(include_camera),
             launch_arguments={
                 # Provide your camera config here if needed.
             }.items(),
