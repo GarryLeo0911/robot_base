@@ -58,8 +58,28 @@ Visualization Manager:
       Name: Depth Image
       Normalize Range: true
       Queue Size: 10
-      Transport Hint: compressedDepth
+      Transport Hint: raw
       Topic: /oak/depth/image_raw
+      Value: true
+    - Class: rviz_default_plugins/PointCloud2
+      Alpha: 1
+      Autocompute Intensity Bounds: true
+      Color: 255; 255; 255
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Intensity: 4096
+      Min Intensity: 0
+      Name: Depth Cloud
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic: /oak/stereo/points
+      Use Fixed Frame: true
+      Use rainbow: false
       Value: true
   Enabled: true
   Global Options:
@@ -93,4 +113,3 @@ Window Geometry:
   Width: 1440
   X: 100
   Y: 100
-
