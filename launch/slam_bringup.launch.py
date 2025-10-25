@@ -32,7 +32,8 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation time'),
         DeclareLaunchArgument('camera_pkg', default_value='depthai_ros_driver', description='Package providing camera-only launch (e.g., depthai_ros_driver)'),
-        DeclareLaunchArgument('camera_launch', default_value='camera.launch.py', description='Camera-only launch file name under camera_pkg'),
+    # Use OAK-D point cloud pipeline by default so laptop can do LiDAR-like SLAM
+    DeclareLaunchArgument('camera_launch', default_value='pointcloud.launch.py', description='Camera-only launch file name under camera_pkg'),
         DeclareLaunchArgument('include_camera', default_value='true', description='If true, include camera-only launch on robot. No SLAM runs here.'),
         DeclareLaunchArgument('cam_parent_frame', default_value='base_link', description='Parent frame for camera'),
         DeclareLaunchArgument('cam_child_frame', default_value='oak-d_frame', description='Camera frame id published by DepthAI'),
