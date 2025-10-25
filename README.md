@@ -12,7 +12,9 @@ Launch
 
 SLAM (OAK‑D + RTAB‑Map)
 - Purpose: Teleop the car while building a map and getting localization from RTAB‑Map. Nav2 is not required.
-- Requirements: OAK‑D and ros-jazzy-depthai-ros installed; its `rtabmap.launch.py` available (usually in package `depthai_ros`).
+- Requirements: OAK‑D and a camera driver. Either:
+  - depthai_ros (ros-jazzy-depthai-ros) with its pointcloud launch, or
+  - oakd_pcloud (https://github.com/h3ct0r/oakd_pcloud) for direct PointCloud2 publishing.
 - Start SLAM teleop bringup (robot side, actuator/sensors only):
   - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py`
   - Optional args:
@@ -42,8 +44,17 @@ Two‑Machine Setup (Robot streams, Laptop maps)
 
 2) Start the robot (Pi)
 - Run the bringup so the Pi publishes sensor topics but does not run RTAB‑Map:
-  - Example (adjust camera launch file to your driver):
-  - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py include_camera:=true camera_pkg:=depthai_ros_driver camera_launch:=camera.launch.py`
+  - Example with depthai_ros (adjust launch file):
+    `ros2 launch ros2_freenove_4wd slam_bringup.launch.py include_camera:=true camera_pkg:=depthai_ros_driver camera_launch:=camera.launch.py`
+  - Example with oakd_pcloud included directly:
+    `ros2 launch ros2_freenove_4wd oakd_camera.launch.py camera_launch:=oakd_pcloud.launch.py`
+
+Using oakd_pcloud with RTAB‑Map (scan-cloud mode)
+- On the laptop, run RTAB‑Map to consume the 3D cloud from oakd_pcloud:
+  - `ros2 launch ros2_freenove_4wd laptop_rtabmap_oakd.launch.py cloud_topic:=/oak/stereo/points`
+  - Adjust `cloud_topic` to match the topic published by oakd_pcloud (use `ros2 topic list | findstr pointcloud` to discover).
+  - Optionally disable ICP odometry: add `start_icp_odom:=false` if you already have odom.
+
 
 3) Visualize on the laptop (RViz only)
 - Start RViz with a ready-made config (edit topics inside RViz if your camera namespace differs):

@@ -18,6 +18,13 @@
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
+  <!-- Mapping and camera stack (optional but used by launch files) -->
+  <exec_depend>rtabmap_slam</exec_depend>
+  <exec_depend>rtabmap_odom</exec_depend>
+  <exec_depend>rtabmap_viz</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <!-- Optional: OAK-D point cloud driver integration -->
+  <exec_depend>oakd_pcloud</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

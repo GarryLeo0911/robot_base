@@ -81,50 +81,11 @@ Panels:
       Use Fixed Frame: true
       Use rainbow: false
       Value: true
-    - Class: rviz_default_plugins/PointCloud2
-      Alpha: 1
-      Autocompute Intensity Bounds: true
-      Color: 180; 255; 180
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Intensity: 4096
-      Min Intensity: 0
-      Name: RTAB-Map Cloud (Map)
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.02
-      Style: Points
-      Topic: /rtabmap/cloud_map
-      Use Fixed Frame: true
-      Use rainbow: false
-      Value: true
-    - Class: rviz_default_plugins/PointCloud2
-      Alpha: 1
-      Autocompute Intensity Bounds: true
-      Color: 255; 180; 180
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Intensity: 4096
-      Min Intensity: 0
-      Name: RTAB-Map Obstacles
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.02
-      Style: Points
-      Topic: /rtabmap/cloud_obstacles
-      Use Fixed Frame: true
-      Use rainbow: false
-      Value: true
+    
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: map
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
