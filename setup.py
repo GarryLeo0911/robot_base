@@ -2,7 +2,7 @@ from setuptools import setup
 from glob import glob
 import os
 
-package_name = 'ros2_freenove_4wd'
+package_name = 'autoslam'
 
 setup(
     name=package_name,
@@ -13,29 +13,19 @@ setup(
         (f'share/{package_name}', ['package.xml']),
         # Install all launch files automatically
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-        # Install all YAML configs in config/
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
-        # Install all URDF files in urdf/
-        (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
-        # Install RViz configs
-        (os.path.join('share', package_name, 'rviz'), glob('rviz/**')),
         (f'share/{package_name}', ['README.md']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='user',
     maintainer_email='user@example.com',
-    description='ROS 2 nodes for Freenove 4WD Smart Car: motors, LEDs, camera, ultrasonic.',
+    description='AutoSLAM - Basic robotic vehicle control with ROS 2: motor control and teleop.',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'motor_node = ros2_freenove_4wd.nodes.motor_node:main',
-            'led_node = ros2_freenove_4wd.nodes.led_node:main',
-            'ultrasonic_node = ros2_freenove_4wd.nodes.ultrasonic_node:main',
-            'camera_node = ros2_freenove_4wd.nodes.camera_node:main',
-            'teleop_wasd = ros2_freenove_4wd.nodes.teleop_wasd:main',
-            'odom_integrator_node = ros2_freenove_4wd.nodes.odom_integrator_node:main',
+            'motor_node = autoslam.nodes.motor_node:main',
+            'teleop_wasd = autoslam.nodes.teleop_wasd:main',
         ],
     },
 )

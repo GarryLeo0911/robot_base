@@ -17,7 +17,7 @@ class MotorNode(Node):
     def __init__(self):
         """Initialize the node, parameters, hardware, and subscription."""
         super().__init__('motor_node')
-        self.declare_parameter('max_duty', 2000)
+        self.declare_parameter('max_duty', 1000)
         self.max_duty = int(self.get_parameter('max_duty').get_parameter_value().integer_value)
         self.car = Ordinary_Car()
         self.subscription = self.create_subscription(Twist, 'cmd_vel', self.cmd_vel_cb, 10)

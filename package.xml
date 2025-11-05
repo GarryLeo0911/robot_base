@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>ros2_freenove_4wd</name>
+  <name>autoslam</name>
   <version>0.1.0</version>
-  <description>ROS 2 nodes for Freenove 4WD Smart Car: motors, LEDs, camera, ultrasonic.</description>
+  <description>AutoSLAM - Basic robotic vehicle control with ROS 2: motor control and teleop.</description>
   <maintainer email="user@example.com">user</maintainer>
   <license>MIT</license>
 
@@ -12,20 +12,6 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>nav2_bringup</exec_depend>
-  <!-- Mapping and camera stack (optional but used by launch files) -->
-  <exec_depend>rtabmap_slam</exec_depend>
-  <exec_depend>rtabmap_odom</exec_depend>
-  <exec_depend>rtabmap_viz</exec_depend>
-  <exec_depend>rviz2</exec_depend>
-  <!-- Optional ROS 2 camera + relays for OAK-D compatibility -->
-  <exec_depend>depthai_ros_driver</exec_depend>
-  <exec_depend>topic_tools</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

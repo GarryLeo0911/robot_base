@@ -1,4 +1,4 @@
-  - `ros2 launch ros2_freenove_4wd slam_bringup.launch.py`
+  - `ros2 launch autoslam slam_bringup.launch.py`
   - Optional args:
     - `camera_pkg:=<your_camera_pkg>` (default `depthai_ros_driver`)
     - `camera_launch:=camera.launch.py` (camera-only launch under the camera package)
