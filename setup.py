@@ -2,12 +2,12 @@ from setuptools import setup
 from glob import glob
 import os
 
-package_name = 'autoslam'
+package_name = 'robot_base'
 
 setup(
     name=package_name,
     version='0.1.0',
-    packages=[package_name, f'{package_name}.nodes', f'{package_name}.hw'],
+    packages=['robot_base', 'robot_base.nodes', 'robot_base.hw'],
     data_files=[
         ('share/ament_index/resource_index/packages', [f'resource/{package_name}']),
         (f'share/{package_name}', ['package.xml']),
@@ -19,13 +19,13 @@ setup(
     zip_safe=True,
     maintainer='user',
     maintainer_email='user@example.com',
-    description='AutoSLAM - Basic robotic vehicle control with ROS 2: motor control and teleop.',
+    description='Robot Base - Basic robotic vehicle motor control and teleop functionality for AutoSLAM system.',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'motor_node = autoslam.nodes.motor_node:main',
-            'teleop_wasd = autoslam.nodes.teleop_wasd:main',
+            'motor_node = robot_base.nodes.motor_node:main',
+            'teleop_wasd = robot_base.nodes.teleop_wasd:main',
         ],
     },
 )

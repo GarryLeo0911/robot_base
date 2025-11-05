@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>autoslam</name>
+  <name>robot_base</name>
   <version>0.1.0</version>
-  <description>AutoSLAM - Basic robotic vehicle control with ROS 2: motor control and teleop.</description>
+  <description>Robot Base - Basic robotic vehicle motor control and teleop functionality for AutoSLAM system.</description>
   <maintainer email="user@example.com">user</maintainer>
   <license>MIT</license>
 
