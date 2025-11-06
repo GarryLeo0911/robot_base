@@ -24,11 +24,6 @@ def generate_launch_description():
             description='Maximum duty cycle for motor control'
         ),
         DeclareLaunchArgument(
-            'cmd_vel_timeout',
-            default_value='1.0',
-            description='Timeout for cmd_vel safety stop (seconds)'
-        ),
-        DeclareLaunchArgument(
             'enable_teleop',
             default_value='false',
             description='Enable keyboard teleop node'
@@ -59,10 +54,7 @@ def generate_launch_description():
             namespace=LaunchConfiguration('robot_namespace'),
             output='screen',
             parameters=[{
-                'max_duty': LaunchConfiguration('max_duty'),
-                'cmd_vel_timeout': LaunchConfiguration('cmd_vel_timeout'),
-                'publish_status': True,
-                'status_frequency': 10.0
+                'max_duty': LaunchConfiguration('max_duty')
             }]
         ),
         
