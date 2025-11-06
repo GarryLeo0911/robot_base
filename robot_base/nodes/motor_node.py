@@ -27,20 +27,35 @@ class MotorNode(Node):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
-        # Declare parameters
-        self.declare_parameter('max_duty', 1000)
-        self.declare_parameter('cmd_vel_timeout', 1.0)  # seconds
+        # Declare parameters with better defaults
+        self.declare_parameter('max_duty', 4095)  # Full 12-bit range
+        self.declare_parameter('cmd_vel_timeout', 2.0)  # Longer timeout for network delays
         self.declare_parameter('publish_status', True)
         self.declare_parameter('status_frequency', 10.0)  # Hz
+        self.declare_parameter('i2c_address', 0x40)  # PCA9685 I2C address
+        self.declare_parameter('pwm_frequency', 1000)  # Motor PWM frequency
         
         # Get parameters
         max_duty = self.get_parameter('max_duty').get_parameter_value().integer_value
         self.cmd_vel_timeout = self.get_parameter('cmd_vel_timeout').get_parameter_value().double_value
         self.publish_status = self.get_parameter('publish_status').get_parameter_value().bool_value
         status_frequency = self.get_parameter('status_frequency').get_parameter_value().double_value
+        i2c_address = self.get_parameter('i2c_address').get_parameter_value().integer_value
+        pwm_frequency = self.get_parameter('pwm_frequency').get_parameter_value().integer_value
         
-        # Initialize motor controller
-        self.motor = Motor(max_duty=max_duty)
+        # Initialize motor controller with enhanced parameters
+        try:
+            self.motor = Motor(
+                max_duty=max_duty,
+                i2c_address=i2c_address,
+                pwm_freq=pwm_frequency
+            )
+            self.get_logger().info(f'Motor controller initialized successfully')
+        except Exception as e:
+            self.get_logger().error(f'Failed to initialize motor controller: {e}')
+            # Continue with a dummy motor for testing
+            from robot_base.hw.motor import Motor
+            self.motor = Motor(max_duty=max_duty)
         
         # Initialize ROS 2 interfaces
         self.cmd_vel_sub = self.create_subscription(
@@ -74,12 +89,13 @@ class MotorNode(Node):
         self.last_cmd_vel_time = self.get_clock().now()
         
         self.get_logger().info(f'Motor node started with max_duty={max_duty}')
+        self.get_logger().info(f'I2C address: 0x{i2c_address:02X}, PWM freq: {pwm_frequency}Hz')
         self.get_logger().info(f'Cmd_vel timeout: {self.cmd_vel_timeout}s')
         self.get_logger().info(f'Status publishing: {self.publish_status}')
     
     def cmd_vel_callback(self, msg: Twist) -> None:
         """
-        Handle incoming cmd_vel messages.
+        Handle incoming cmd_vel messages with enhanced error handling.
         
         Args:
             msg: Twist message with linear and angular velocities
@@ -91,12 +107,23 @@ class MotorNode(Node):
         linear_x = msg.linear.x
         angular_z = msg.angular.z
         
-        # Send to motor controller
-        self.motor.set_velocity(linear_x, angular_z)
+        # Validate input ranges
+        if abs(linear_x) > 2.0 or abs(angular_z) > 2.0:
+            self.get_logger().warn(
+                f'Large velocity command received: linear={linear_x:.3f}, angular={angular_z:.3f}'
+            )
         
-        self.get_logger().debug(
-            f'Received cmd_vel: linear_x={linear_x:.3f}, angular_z={angular_z:.3f}'
-        )
+        try:
+            # Send to motor controller
+            self.motor.set_velocity(linear_x, angular_z)
+            
+            self.get_logger().debug(
+                f'Cmd_vel: linear_x={linear_x:.3f}, angular_z={angular_z:.3f}'
+            )
+        except Exception as e:
+            self.get_logger().error(f'Error setting motor velocity: {e}')
+            # Emergency stop on error
+            self.motor.stop()
     
     def safety_stop_callback(self) -> None:
         """Safety callback to stop motors if no recent cmd_vel received."""
@@ -122,9 +149,16 @@ class MotorNode(Node):
         self.status_pub.publish(status_msg)
     
     def destroy_node(self) -> None:
-        """Clean shutdown - stop motors."""
+        """Clean shutdown - stop motors and close hardware properly."""
         self.get_logger().info('Shutting down motor node - stopping motors')
-        self.motor.stop()
+        try:
+            self.motor.stop()
+            # Close hardware interface if available
+            if hasattr(self.motor, 'close'):
+                self.motor.close()
+        except Exception as e:
+            self.get_logger().error(f'Error during motor shutdown: {e}')
+        
         super().destroy_node()
 
 
